@@ -37,11 +37,14 @@ export async function generateAICareerAdvice(careerGoal: any, question?: string)
       });
       
       return response.choices[0].message.content || "Sorry, I couldn't generate advice at this moment.";
-    } catch (apiError) {
+    } catch (apiError: any) {
       console.error("Error calling OpenAI API:", apiError);
       
       // Check if it's a rate limit or quota error
-      if (apiError.code === 'insufficient_quota' || apiError.status === 429) {
+      const errorObj = apiError as any;
+      if ((errorObj.error?.code === 'insufficient_quota') || 
+          (errorObj.code === 'insufficient_quota') || 
+          (errorObj.status === 429)) {
         console.log("OpenAI API quota exceeded. Using fallback advice.");
         return generateFallbackAdvice(careerGoal, question);
       }

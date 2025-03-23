@@ -14,19 +14,19 @@ export default function AICareerAdvisor() {
   const { careerGoal, advice, setAdvice } = useCareer();
   const [userQuestion, setUserQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef(null);
-  const chatEndRef = useRef(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    if (chatEndRef.current && careerGoal && advice) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [advice, isLoading, careerGoal]);
   
   if (!careerGoal || !advice) {
     return null;
   }
-  
-  // Scroll to bottom when new messages are added
-  useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [advice, isLoading]);
   
   const handleAskQuestion = async () => {
     if (!userQuestion.trim() || isLoading) return;
@@ -211,7 +211,7 @@ export default function AICareerAdvisor() {
                 </div>
                 
                 {/* Invisible element to scroll to */}
-                <div ref={chatEndRef} />
+                <div id="chat-end" ref={chatEndRef}></div>
               </div>
             </ScrollArea>
             
