@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCareer } from "@/context/CareerContext";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -7,17 +7,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Cpu, User, Loader2 } from "lucide-react";
+import { Cpu, User, Loader2, SendIcon, Sparkles, BrainCog, Bot } from "lucide-react";
 
 export default function AICareerAdvisor() {
   const { toast } = useToast();
   const { careerGoal, advice, setAdvice } = useCareer();
   const [userQuestion, setUserQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const scrollAreaRef = useRef(null);
+  const chatEndRef = useRef(null);
   
   if (!careerGoal || !advice) {
     return null;
   }
+  
+  // Scroll to bottom when new messages are added
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [advice, isLoading]);
   
   const handleAskQuestion = async () => {
     if (!userQuestion.trim() || isLoading) return;
@@ -71,107 +80,164 @@ export default function AICareerAdvisor() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.4 }}
+      className="w-full"
     >
-      <Card>
-        <CardHeader className="pb-3">
+      <Card className="border-none shadow-lg overflow-hidden">
+        <CardHeader className="pb-3 border-b bg-gradient-to-r from-primary/5 to-pink-500/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-              <Cpu className="h-5 w-5 text-primary-600" />
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shadow-inner">
+              <BrainCog className="h-5 w-5 text-primary animate-pulse" />
             </div>
-            <CardTitle className="text-xl font-semibold text-gray-900">AI Career Advisor</CardTitle>
+            <div>
+              <CardTitle className="flex items-center gap-2 text-xl font-bold">
+                AI Career Mentor
+                <span className="text-xs font-normal py-0.5 px-2 bg-primary/10 text-primary rounded-full">
+                  Powered by AI
+                </span>
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Ask personalized questions about your career path
+              </p>
+            </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <ScrollArea className="border border-gray-200 rounded-lg p-4 h-96 bg-gray-50 mb-4">
-            <div className="space-y-4">
-              {/* Initial AI Message */}
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <Cpu className="h-4 w-4 text-primary-600" />
-                </div>
-                <div className="bg-white p-3 rounded-lg shadow-sm max-w-[85%]">
-                  <p className="text-gray-800">
-                    I've analyzed your career goal as a <span className="font-medium">{careerGoal.goal}</span>. 
-                    Based on your current skills and experience level, here's my personalized advice:
-                  </p>
-                </div>
-              </div>
-              
-              {/* Advice Chat Messages */}
-              {advice.map((message, index) => {
-                // Skip the first message as we display it separately above
-                if (index === 0 && !message.question) return null;
-                
-                if (message.isUser) {
-                  // User message
-                  return (
-                    <motion.div 
-                      key={message.id || index}
-                      className="flex items-start gap-3 justify-end"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="bg-primary-50 p-3 rounded-lg shadow-sm max-w-[85%]">
-                        <p className="text-gray-800">{message.question}</p>
-                      </div>
-                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <User className="h-4 w-4 text-gray-600" />
-                      </div>
-                    </motion.div>
-                  );
-                } else {
-                  // AI message
-                  return (
-                    <motion.div 
-                      key={message.id}
-                      className="flex items-start gap-3"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: 0.2 }}
-                    >
-                      <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                        <Cpu className="h-4 w-4 text-primary-600" />
-                      </div>
-                      <div className="bg-white p-3 rounded-lg shadow-sm max-w-[85%]">
-                        <p className="text-gray-800">{message.advice}</p>
-                      </div>
-                    </motion.div>
-                  );
-                }
-              })}
-              
-              {/* Loading indicator */}
-              {isLoading && (
+        <CardContent className="p-0">
+          <div className="relative">
+            {/* Background decoration */}
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl opacity-50"></div>
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-pink-500/5 rounded-full blur-3xl opacity-50"></div>
+            
+            <ScrollArea 
+              ref={scrollAreaRef} 
+              className="h-[400px] p-4 pt-5"
+            >
+              <div className="space-y-4 max-w-3xl mx-auto">
+                {/* Welcome message card with gradient background */}
                 <motion.div 
-                  className="flex items-start gap-3"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  className="w-full p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/20 mb-8"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
                 >
-                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <Loader2 className="h-4 w-4 text-primary-600 animate-spin" />
-                  </div>
-                  <div className="bg-white p-3 rounded-lg shadow-sm">
-                    <p className="text-gray-500">Thinking...</p>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                      <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
+                        Career AI Assistant
+                        <span className="inline-flex animate-pulse items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Online
+                        </span>
+                      </h3>
+                      <p className="text-gray-700 text-sm">
+                        I've analyzed your career goal as a <span className="font-medium">{careerGoal.goal}</span>. 
+                        Ask me specific questions about skills to develop, learning resources, or career advancement strategies.
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
-              )}
+                
+                {/* Advice Chat Messages */}
+                <div className="space-y-6">
+                  {advice.map((message, index) => {
+                    // Skip the first message as we display it separately above
+                    if (index === 0 && !message.question) return null;
+                    
+                    if (message.isUser) {
+                      // User message
+                      return (
+                        <motion.div 
+                          key={message.id || index}
+                          className="flex items-end gap-3 justify-end"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className="bg-primary/10 p-3 rounded-2xl rounded-br-none shadow-sm max-w-[80%] text-primary-foreground">
+                            <p className="text-gray-800">{message.question}</p>
+                          </div>
+                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
+                            <User className="h-4 w-4 text-gray-600" />
+                          </div>
+                        </motion.div>
+                      );
+                    } else {
+                      // AI message
+                      return (
+                        <motion.div 
+                          key={message.id}
+                          className="flex items-end gap-3"
+                          initial={{ opacity: 0, scale: 0.97, y: 10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: 0.1 }}
+                        >
+                          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                            <Bot className="h-4 w-4 text-white" />
+                          </div>
+                          <div className="glass-effect p-4 rounded-2xl rounded-bl-none max-w-[80%] shadow-md">
+                            <p className="text-gray-800 whitespace-pre-line">
+                              {message.advice}
+                            </p>
+                          </div>
+                        </motion.div>
+                      );
+                    }
+                  })}
+
+                  {/* Loading indicator */}
+                  <AnimatePresence>
+                    {isLoading && (
+                      <motion.div 
+                        className="flex items-end gap-3"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                          <Bot className="h-4 w-4 text-white" />
+                        </div>
+                        <div className="bg-white border border-gray-100 p-3 rounded-xl shadow-sm">
+                          <div className="flex space-x-2 items-center">
+                            <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                            <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                            <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "600ms" }}></div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                
+                {/* Invisible element to scroll to */}
+                <div ref={chatEndRef} />
+              </div>
+            </ScrollArea>
+            
+            {/* Message input with glass effect */}
+            <div className="p-4 border-t border-gray-100 glass-effect">
+              <div className="flex items-center gap-2 max-w-3xl mx-auto">
+                <Input 
+                  value={userQuestion}
+                  onChange={(e) => setUserQuestion(e.target.value)}
+                  placeholder="Ask about skills, resources, or career strategies..." 
+                  onKeyDown={(e) => e.key === 'Enter' && handleAskQuestion()}
+                  className="shadow-sm border-gray-200 focus-visible:ring-primary/50"
+                />
+                <Button 
+                  onClick={handleAskQuestion}
+                  disabled={!userQuestion.trim() || isLoading}
+                  className="button-glow shadow-md gap-2 px-4"
+                  size="icon"
+                >
+                  {isLoading ? 
+                    <Loader2 className="h-4 w-4 animate-spin" /> : 
+                    <SendIcon className="h-4 w-4" />
+                  }
+                </Button>
+              </div>
             </div>
-          </ScrollArea>
-          
-          <div className="flex items-center gap-2">
-            <Input 
-              value={userQuestion}
-              onChange={(e) => setUserQuestion(e.target.value)}
-              placeholder="Ask a question about your career path..." 
-              onKeyDown={(e) => e.key === 'Enter' && handleAskQuestion()}
-            />
-            <Button 
-              onClick={handleAskQuestion}
-              disabled={!userQuestion.trim() || isLoading}
-            >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Ask"}
-            </Button>
           </div>
         </CardContent>
       </Card>

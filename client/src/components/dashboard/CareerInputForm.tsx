@@ -14,6 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles, Rocket, Lightbulb, Code, BookOpen, Target } from "lucide-react";
 
 const formSchema = z.object({
   careerGoal: z.string().min(2, { message: "Career goal is required" }),
@@ -202,93 +203,142 @@ export default function CareerInputForm() {
 
   return (
     <motion.div 
-      className="bg-white rounded-xl shadow-md p-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      className="glass-effect rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">Define Your Career Path</h2>
-      
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <FormField
-            control={form.control}
-            name="careerGoal"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Career Goal</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="e.g., Frontend Developer, Data Scientist" 
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="skills"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current Skills</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="e.g., HTML, CSS, JavaScript, Python" 
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <FormField
-            control={form.control}
-            name="experienceLevel"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Experience Level</FormLabel>
-                <Select 
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+      <div className="p-6 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-primary/5 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-pink-500/5 rounded-full blur-3xl opacity-50"></div>
+        
+        {/* Header with icon */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-primary/10 rounded-xl">
+            <Target className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Define Your Career Path</h2>
+            <p className="text-gray-500 text-sm">Tell us about your career ambitions</p>
+          </div>
+        </div>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 relative z-10">
+            <FormField
+              control={form.control}
+              name="careerGoal"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-900 font-medium">
+                    <div className="flex items-center gap-2">
+                      <Rocket className="h-4 w-4 text-primary" />
+                      Career Goal
+                    </div>
+                  </FormLabel>
+                  <FormDescription>
+                    What job title or role do you want to achieve?
+                  </FormDescription>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your experience" />
-                    </SelectTrigger>
+                    <Input 
+                      placeholder="e.g., Frontend Developer, Data Scientist" 
+                      className="shadow-sm focus-visible:ring-primary/50"
+                      {...field}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="0-1 years">0-1 years</SelectItem>
-                    <SelectItem value="1-2 years">1-2 years</SelectItem>
-                    <SelectItem value="2-3 years">2-3 years</SelectItem>
-                    <SelectItem value="3-5 years">3-5 years</SelectItem>
-                    <SelectItem value="5+ years">5+ years</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              "Generate Career Path"
-            )}
-          </Button>
-        </form>
-      </Form>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="skills"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-900 font-medium">
+                    <div className="flex items-center gap-2">
+                      <Code className="h-4 w-4 text-primary" />
+                      Current Skills
+                    </div>
+                  </FormLabel>
+                  <FormDescription>
+                    List your existing skills separated by commas
+                  </FormDescription>
+                  <FormControl>
+                    <Input 
+                      placeholder="e.g., HTML, CSS, JavaScript, Python" 
+                      className="shadow-sm focus-visible:ring-primary/50"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="experienceLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-900 font-medium">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4 text-primary" />
+                      Experience Level
+                    </div>
+                  </FormLabel>
+                  <FormDescription>
+                    How much experience do you have in this field?
+                  </FormDescription>
+                  <Select 
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full shadow-sm focus:ring-primary/50">
+                        <SelectValue placeholder="Select your experience" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="0-1 years">0-1 years</SelectItem>
+                      <SelectItem value="1-2 years">1-2 years</SelectItem>
+                      <SelectItem value="2-3 years">2-3 years</SelectItem>
+                      <SelectItem value="3-5 years">3-5 years</SelectItem>
+                      <SelectItem value="5+ years">5+ years</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="pt-2">
+              <Button 
+                type="submit" 
+                className="w-full relative overflow-hidden group button-glow"
+                disabled={isSubmitting}
+                size="lg"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generating Your Path...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 transition-transform group-hover:scale-110" />
+                      Generate AI Career Path
+                    </>
+                  )}
+                </span>
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </motion.div>
   );
 }
