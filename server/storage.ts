@@ -77,7 +77,9 @@ export class MemStorage implements IStorage {
   async createCareerGoal(insertCareerGoal: InsertCareerGoal): Promise<CareerGoal> {
     const id = this.careerGoalId++;
     const createdAt = new Date();
-    const careerGoal: CareerGoal = { ...insertCareerGoal, id, createdAt };
+    // Ensure userId is not undefined
+    const userId = insertCareerGoal.userId === undefined ? null : insertCareerGoal.userId;
+    const careerGoal: CareerGoal = { ...insertCareerGoal, id, createdAt, userId };
     this.careerGoals.set(id, careerGoal);
     return careerGoal;
   }
@@ -96,7 +98,14 @@ export class MemStorage implements IStorage {
   async createLearningPath(insertLearningPath: InsertLearningPath): Promise<LearningPath> {
     const id = this.learningPathId++;
     const createdAt = new Date();
-    const learningPath: LearningPath = { ...insertLearningPath, id, createdAt };
+    // Ensure careerGoalId is not undefined
+    const careerGoalId = insertLearningPath.careerGoalId === undefined ? null : insertLearningPath.careerGoalId;
+    const learningPath: LearningPath = { 
+      ...insertLearningPath, 
+      id, 
+      createdAt, 
+      careerGoalId 
+    };
     this.learningPaths.set(id, learningPath);
     return learningPath;
   }
@@ -115,7 +124,16 @@ export class MemStorage implements IStorage {
   async createAiAdvice(insertAiAdvice: InsertAiAdvice): Promise<AiAdvice> {
     const id = this.aiAdviceId++;
     const createdAt = new Date();
-    const advice: AiAdvice = { ...insertAiAdvice, id, createdAt };
+    // Ensure careerGoalId and question are not undefined
+    const careerGoalId = insertAiAdvice.careerGoalId === undefined ? null : insertAiAdvice.careerGoalId;
+    const question = insertAiAdvice.question === undefined ? null : insertAiAdvice.question;
+    const advice: AiAdvice = { 
+      ...insertAiAdvice, 
+      id, 
+      createdAt,
+      careerGoalId,
+      question
+    };
     this.aiAdvice.set(id, advice);
     return advice;
   }
