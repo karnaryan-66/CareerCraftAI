@@ -129,14 +129,4 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-// AI helper function
-import OpenAI from "openai";
 
-export async function generateAICareerAdvice(careerGoal: any, question?: string): Promise<string> {
-  // Simulate AI response for now (will be replaced with actual OpenAI integration)
-  if (question) {
-    return `Here's my advice about "${question}" for your career goal as a ${careerGoal.goal}: Focus on building a strong portfolio and continuously learning new skills in this field.`;
-  } else {
-    return `Based on your goal to become a ${careerGoal.goal} with skills in ${careerGoal.skills} and ${careerGoal.experienceLevel} of experience, I recommend focusing on building practical projects and expanding your knowledge through online courses.`;
-  }
-}
