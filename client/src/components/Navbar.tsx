@@ -28,12 +28,18 @@ export default function Navbar() {
             <Link href="/dashboard" className={`text-gray-700 hover:text-primary-600 font-medium ${location === '/dashboard' ? 'text-primary-600' : ''}`}>
               Dashboard
             </Link>
-            <span className="text-gray-700 hover:text-primary-600 font-medium cursor-pointer">Resources</span>
-            <span className="text-gray-700 hover:text-primary-600 font-medium cursor-pointer">About</span>
+            <Link href="/resources" className={`text-gray-700 hover:text-primary-600 font-medium ${location === '/resources' ? 'text-primary-600' : ''}`}>
+              Resources
+            </Link>
+            <Link href="/about" className={`text-gray-700 hover:text-primary-600 font-medium ${location === '/about' ? 'text-primary-600' : ''}`}>
+              About
+            </Link>
           </nav>
           
           <div className="hidden md:flex items-center">
-            <Button className="ml-8" variant="default">Sign In</Button>
+            <Link href="/signin">
+              <Button className="ml-8" variant="default">Sign In</Button>
+            </Link>
           </div>
           
           <div className="md:hidden flex items-center">
@@ -62,13 +68,15 @@ export default function Navbar() {
             <Link href="/dashboard" className={`block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 ${location === '/dashboard' ? 'text-primary-600' : ''}`}>
               Dashboard
             </Link>
-            <div className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 cursor-pointer">
+            <Link href="/resources" className={`block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 ${location === '/resources' ? 'text-primary-600' : ''}`}>
               Resources
-            </div>
-            <div className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 cursor-pointer">
+            </Link>
+            <Link href="/about" className={`block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 ${location === '/about' ? 'text-primary-600' : ''}`}>
               About
-            </div>
-            <Button className="w-full mt-3" variant="default">Sign In</Button>
+            </Link>
+            <Link href="/signin" className="block w-full mt-3">
+              <Button className="w-full" variant="default">Sign In</Button>
+            </Link>
           </div>
         </div>
       )}
