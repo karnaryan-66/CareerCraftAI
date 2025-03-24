@@ -55,3 +55,5 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+const baseURL = "http://0.0.0.0:5000/api"; //Added base url here.
