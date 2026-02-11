@@ -56,4 +56,4 @@ export const queryClient = new QueryClient({
   },
 });
 
-const baseURL = "http://0.0.0.0:5000/api"; //Added base url here.
+const baseURL = "http://localhost:5000/api"; //Added base url here.
